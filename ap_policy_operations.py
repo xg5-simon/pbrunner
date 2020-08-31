@@ -52,7 +52,7 @@ def list_policies(cb, parser, args):
 
 def import_generator(cb, parser, args):
     for p in cb.select(Policy):
-        print(f'policy_operations.py --profile <<<CHANGEME>>> list -N {p.name} -d \"{p.description}\" -p {p.priorityLevel} -f policy-{p.id}.json')
+        print(f'policy_operations.py --profile <<<CHANGEME>>> import -N \"{p.name}\" -d \"{p.description}\" -p {p.priorityLevel} -f policy-{p.id}.json')
 
 
 def import_policy(cb, parser, args):
