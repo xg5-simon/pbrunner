@@ -51,8 +51,13 @@ def list_policies(cb, parser, args):
 
 
 def import_generator(cb, parser, args):
-    for p in cb.select(Policy):
-        print(f'policy_operations.py --profile <<<CHANGEME>>> import -N \"{p.name}\" -d \"{p.description}\" -p {p.priorityLevel} -f policy-{p.id}.json')
+    policies = get_policy_by_name_or_id(cb, args.id, args.name, return_all_if_none=True)
+    for p in policies:
+        print(f'policy_operations.py --profile <<<CHANGEME>>> import '
+              f'-N \"{p.name}\" '
+              f'-d \"{p.description}\" '
+              f'-p {p.priorityLevel} '
+              f'-f policy-{p.id}.json')
 
 
 def import_policy(cb, parser, args):
@@ -145,7 +150,12 @@ def main():
     commands = parser.add_subparsers(help="Policy commands", dest="command_name")
 
     commands.add_parser("list", help="List all configured policies")
-    commands.add_parser("generator", help="Generate bulk import command based on all configured policies")
+    
+    generate_import_command = commands.add_parser("generator", help="Generate a policy import command based on a single"
+                                                                    "policy or all policies")
+    generate_import_command_specifier = generate_import_command.add_mutually_exclusive_group(required=False)
+    generate_import_command_specifier.add_argument("-i", "--id", type=int, help="ID of policy")
+    generate_import_command_specifier.add_argument("-N", "--name", help="Name of policy")
 
     import_policy_command = commands.add_parser("import", help="Import policy from JSON file")
     import_policy_command.add_argument("-N", "--name", help="Name of new policy", required=True)
