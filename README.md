@@ -21,7 +21,7 @@ To list all policies in CSV format run the following command.
 ```shell
 python3 ap_policy_operations.py --profile default list
 ```
-Sample Output:
+**Sample Output**
 
 ```
 "Policy id","Name","Description","Priority"
@@ -35,7 +35,7 @@ To list all policies and associated rules, run the list command with the -V or -
 python3 ap_policy_operations.py --profile default list -V
 ```
 
-Sample Output
+**Sample Output**
 ```csv
 Policy id 109295: Advanced (Strict prevention, not recommended as a starting policy. Thoroughly test in your environment before moving endpoints into this policy.)
 Rules:
@@ -55,11 +55,11 @@ python3 policy_operations.py --profile default export -N MacOS
 ```shell
 python3 policy_operations.py --profile default export -i 117395
 ```
-Sample Output
+**Sample Output**
 ```shell
 Wrote policy 117395 MacOS to file policy-117395.json
 ```
-##### Notes
+*Note*
 > - It is recommended not to change the filename as the exported JSON does not include the Policy ID, Name or Description of the exported policy.
 > - When using the -N switch to search by policy name, the search argument is case sensitive.
 
@@ -76,10 +76,23 @@ To import a policy from an exported JSON policy file , run the following command
 ```shell
 python3 policy_operations.py --profile default import -N MacOSV2 -d "MacOS Policy Version 2" -p MEDIUM -f policy-117395.json
 ```
-Sample Output
+**Sample Output**
 ```shell
 Added policy. New policy ID is 133354
 ```
 
-#### How to create policy import commands with the generator option
+#### How to create policy import commands with the generator command.
+
+The generator command allows you to search for a policy by name or by policy id and then generate a import command that specifies each required argument.
+
+```shell
+python3 policy_operations.py --profile default generator -N MacOS
+```
+**Sample Output**
+```shell
+policy_operations.py --profile <<<CHANGEME>>> import -N "MacOS" -d "MacOS specific policy." -p MEDIUM -f policy-117395.json
+```
+
+*Note*
+> If a policy name or policy id is not provided, the generator command will generate an import command for all policies.
 
