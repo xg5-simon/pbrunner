@@ -41,13 +41,20 @@ def get_policy_by_name_or_id(cb, policy_id=None, name=None, return_all_if_none=F
 
 
 def list_policies(cb, parser, args):
-    for p in cb.select(Policy):
-        print(u"Policy id {0}: {1} {2}".format(p.id, p.name, "({0})".format(p.description) if p.description else ""))
-        print("Rules:")
-        for r in p.rules.values():
-            print("  {0}: {1} when {2} {3} is {4}".format(r.get('id'), r.get("action"),
-                                                          r.get("application", {}).get("type"),
-                                                          r.get("application", {}).get("value"), r.get("operation")))
+    if args.verbose:
+        for p in cb.select(Policy):
+            print(
+                u"Policy id {0}: {1} {2}".format(p.id, p.name, "({0})".format(p.description) if p.description else ""))
+            print("Rules:")
+            for r in p.rules.values():
+                print("  {0}: {1} when {2} {3} is {4}".format(r.get('id'), r.get("action"),
+                                                              r.get("application", {}).get("type"),
+                                                              r.get("application", {}).get("value"),
+                                                              r.get("operation")))
+    else:
+        print(f'\"Policy id\",\"Name\",\"Description\",\"Priority\"')
+        for p in cb.select(Policy):
+            print(f'\"{p.id}\",\"{p.name}\",\"{p.description}\",\"{p.priorityLevel}\"')
 
 
 def import_generator(cb, parser, args):
@@ -149,8 +156,11 @@ def main():
     parser = build_cli_parser("Policy operations")
     commands = parser.add_subparsers(help="Policy commands", dest="command_name")
 
-    commands.add_parser("list", help="List all configured policies")
-    
+    list_policy_command = commands.add_parser("list", help="List all configured policies")
+    list_policy_command_specifier = list_policy_command.add_mutually_exclusive_group(required=False)
+    list_policy_command_specifier.add_argument("-V", "--verbose", action='store_true',
+                                               help="Verbose output. Print policy id, name, description and rules")
+
     generate_import_command = commands.add_parser("generator", help="Generate a policy import command based on a single"
                                                                     "policy or all policies")
     generate_import_command_specifier = generate_import_command.add_mutually_exclusive_group(required=False)
@@ -174,7 +184,7 @@ def main():
     del_policy_specifier = del_command.add_mutually_exclusive_group(required=True)
     del_policy_specifier.add_argument("-i", "--id", type=int, help="ID of policy to delete")
     del_policy_specifier.add_argument("-N", "--name", help="Name of policy to delete. Specify --force to delete"
-                                      " multiple policies that have the same name")
+                                                           " multiple policies that have the same name")
     del_command.add_argument("--force", help="If NAME matches multiple policies, delete all matching policies",
                              action="store_true", default=False)
 
