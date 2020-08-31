@@ -161,7 +161,7 @@ def main():
     list_policy_command_specifier.add_argument("-V", "--verbose", action='store_true',
                                                help="Verbose output. Print policy id, name, description and rules")
 
-    generate_import_command = commands.add_parser("generator", help="Generate a policy import command based on a single"
+    generate_import_command = commands.add_parser("generator", help="Generate a policy import command based on a single "
                                                                     "policy or all policies")
     generate_import_command_specifier = generate_import_command.add_mutually_exclusive_group(required=False)
     generate_import_command_specifier.add_argument("-i", "--id", type=int, help="ID of policy")
